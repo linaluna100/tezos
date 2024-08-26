@@ -1,0 +1,42 @@
+---
+version: "2.0"
+services:
+  tezos:
+    image: tezos/tezos:latest
+    expose:
+      - port: 8732
+        as: 8732
+        to:
+          - global: true
+      - port: 9732
+        as: 9732
+        to:
+          - global: true
+    args:
+      - octez-node
+      - --network=mainnet
+      - --rpc-addr=0.0.0.0
+      - --allow-all-rpc=0.0.0.0
+      - --external-rpc-addr=0.0.0.0
+      - --history-mode=rolling
+profiles:
+  compute:
+    tezos:
+      resources:
+        cpu:
+          units: 2
+        memory:
+          size: 16GB
+        storage:
+          - size: 100Gi
+  placement:
+    dcloud:
+      pricing:
+        tezos:
+          denom: uakt
+          amount: 10000
+deployment:
+  tezos:
+    dcloud:
+      profile: tezos
+      count: 1
